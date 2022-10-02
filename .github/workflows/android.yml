@@ -51,9 +51,17 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
-      - name: Configure Keystore
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.ANDROID_KEYSTORE_FILE }}
         run: |
-          echo "$ANDROID_KEYSTORE_FILE" base64 -di > app/keystore.jks
+          TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
+          mkdir "${TMP_KEYSTORE_FILE_PATH}"
+          echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/prod_keystore.jks
+
+#          echo "$ANDROID_KEYSTORE_FILE" base64 -di > app/keystore.jks
+      - name: Configure Keystore
+        run: |         
           echo "storeFile=keystore.jks" >> keystore.properties
           echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> keystore.properties
           echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> keystore.properties
