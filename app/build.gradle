@@ -3,9 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 
 android {
     namespace 'com.shakil.githubactionexample'
@@ -20,9 +18,9 @@ android {
                 keystoreFile.renameTo("keystore/prod_keystore.jks")
             }
             storeFile file("keystore/prod_keystore.jks")
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storePassword keystoreProperties['storePassword']
+            keyAlias System.getenv("KEYSTORE_KEY_ALIAS")
+            keyPassword System.getenv("KEYSTORE_KEY_PASSWORD")
+            storePassword System.getenv("KEYSTORE_STORE_PASSWORD")
         }
     }
 
